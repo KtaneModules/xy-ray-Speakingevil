@@ -1,1 +1,1 @@
-# xy-ray
+#[ModKit Wiki](../../wiki)
