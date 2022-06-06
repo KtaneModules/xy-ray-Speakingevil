@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -153,6 +153,43 @@ public class XYRayScript : MonoBehaviour {
                 solids[sindex[i]].SetActive(false);
                 yield return new WaitForSeconds(0.5f);
             }
+        }
+    }
+
+#pragma warning disable 414
+    private readonly string TwitchHelpMessage = "!{0} <1-5><1-5> [Enters a pair of digits into the module.]";
+#pragma warning restore 414
+
+    private IEnumerator ProcessTwitchCommand(string command)
+    {
+        command = command.Replace(" ", "");
+        if(command.Length != 2)
+        {
+            yield return "sendtochaterror!f Enter a pair of digits.";
+            yield break;
+        }
+        int[] p = new int[2] { "12345".IndexOf(command[0].ToString()), "12345".IndexOf(command[1].ToString())};
+        if (p[0] >= 0 && p[1] >= 0)
+        {
+            yield return null;
+            buttons[p[0]].OnInteract();
+            yield return null;
+            buttons[p[1]].OnInteract();
+        }
+        else
+            yield return "sendtochaterror!f Digits must be numbers in the range 1-5.";
+    }
+
+    private IEnumerator TwitchHandleForcedSolve()
+    {
+        while (!moduleSolved)
+        {
+            int e = locked == -1 ? gridgits[0] : gridgits[locked];
+            yield return null;
+            buttons[(e / 10) - 1].OnInteract();
+            yield return null;
+            buttons[(e % 10) - 1].OnInteract();
+            yield return new WaitForSeconds(0.5f);
         }
     }
 }
